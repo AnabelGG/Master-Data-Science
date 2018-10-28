@@ -1,0 +1,26 @@
+# Configuro git con mi nombre y email:
+cat .gitconfig
+git config --global user.name "Anabel Gamero"
+git config --global user.email anabelgamero@gmail.com
+
+
+# Clono el repositorio que acabo de crear en GitHub:
+git clone https://github.com/AnabelGG/Master-Data-Science.git
+ls
+cd Master-Data-Science
+ls
+
+
+# Abro el fichero existente en el repo, lo edito y subo el cambio al repo:
+cat README.md
+gedit README.md
+git add README.md
+git commit -m "Mi primer cambio en git"
+git push
+git status
+git push
+git pull
+
+
+
+
