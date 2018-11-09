@@ -18,7 +18,6 @@ git add README.md
 git commit -m "Mi primer cambio en git"
 git push
 git status
-git push
 git pull
 
 
