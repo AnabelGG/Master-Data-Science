@@ -1,0 +1,152 @@
+# FILE UTILITIES
+
+# 1. Create a directory “first_dir” in you home folder
+% cd
+% mkdir first_dir
+
+# 2. Create an empty file “text_file.txt” inside “first_dir” directory.
+% cd first_dir
+% touch text_file.txt
+
+# 3. Add execute permissions to group users, and write permissions to other users to “text_file.txt”
+% ls -l #para ver que permisos tiene ahora (-rw-r--r-- = 644)
+% chmod g+x,o+w text_file.txt
+# o:
+% chmod 656 text_file.txt
+% ls -l #para comprobar
+
+# 4. Create 3 subdirectories inside “first_dir”: “sub1”, “sub2”, “text_file”
+% pwd
+% mkdir sub1 sub2 text_file
+% ls #para comprobar
+
+# 5. Copy the “text_file.txt” file into “sub1” directory.
+% cp text_file.txt sub1
+% ls sub1 #para comprobar
+
+# 6. Move the “text_file.txt” into sub2 under name “text_file.txt.2”.
+% mv text_file.txt sub2/text_file.txt.2 
+% ls sub1 #para comprobar
+
+# 7. Copy the whole directory “sub1” to “sub3” directory.
+% cp -r sub1 sub3
+
+# 8. Change file name of “first_dir /sub2/text_file.txt.2” to “first_dir /sub2/text_file.txt.backup”
+% mv first_dir/sub2/text_file.txt.2 first_dir/sub2/text_file.txt.backup  # desde home
+% mv sub2/text_file.txt.2 sub2/text_file.txt.backup 			 # desde first_dir
+
+# 9. Move “first_dir /sub2/text_file.txt.backup” to “first_dir” directory as hidden file
+% mv first_dir/sub2/text_file.txt.backup first_dir/sub2/.text_file.txt.backup   # desde home 
+% mv sub2/text_file.txt.backup ./.text_file.txt.backup				# desde first_dir
+
+# 10. Delete the “sub2” subdirectory
+% rm -r sub2
+
+
+
+
+# CONTENT UTILITIES
+
+# 1. Go to data/shell/ directory and use less to open Finn.txt
+% cd
+% cd Data/shell                                                                                                    
+% shell % less Finn.txt
+
+	# a) locate the lines starting with “The”
+	     /^The
+	# b) Locate the lines ending with “works”
+	     /works$
+
+# 2. Open ~/Data/opentraveldata/optd_aircraft.csv with less command. Search for “Canada” and then search for “Puma”
+% cd                                                                                                   
+% less Data/opentraveldata/optd_aircraft.csv
+/Canada
+/Puma
+
+# 3. Use help to find out how to get the list of subdirectories limited to 2 sublevels by using “tree” command
+% tree --help # tree -L 2
+
+
+
+
+# FILE UTILITIES (2)
+
+# 1. Go to ~/Data/Shell/ and use Text_example.txt to generate a new file with the same content but with line number at the beginning of each line.
+% cd ~/Data/shell/
+% cat -n Text_example.txt > Text_example_linenumber.txt
+% cat Text_example_linenumber.txt #para comprobar
+
+# 2. Generate a new file with twice the content of “Text_example.txt” inside. (one full text content after another)
+% cat Text_example.txt > Text_example_twice.txt
+% cat Text_example.txt >> Text_example_twice.txt
+
+# 3. Open new shell inside a new terminal tab and using block search execute again the command where we printed the linux details (hint: it had “release” in the name)
+[CTRL+shift+t]
+[CTRL+r]
+rel
+% cat -n /etc/os-release
+
+# 4. Generate an file with creation timespamp and name of the user who created it on the first line. Smth like this:
+#	"# This file is created by KSCHOOL on:Sun Nov 26 10:31:06 CET 2017"
+% echo 'Hecho por Anabel GG el ' `date` > timestamp
+% cat timestamp #para comprobar
+
+
+# CONTENT UTILITIES (2)
+
+# 1. Save the information of 3 largest files located inside ~/Data/us_dot/otp/ into a three_largest_file.txt. (hint: use ls with sort option and pipe the result)
+% cd ~/Data/us_dot/otp/
+% ls -lSs | head -4 | tail -3 > three_largest_file.txt #hacemos tail tras head, pq head devuelve una primera linea con 'total 186M'
+% cat three_largest_file.txt #para comprobar
+
+# 2. Save last 20 commands used at command line to a file. (hint use history and redirect the output)
+% cd 
+% history -20 > last_20_commands
+% cat last_20_commands #para comprobar
+
+# 3. Print first 3 lines of ~/Text_example.txt
+% cd ~/Data/shell
+% head -3 Text_example.txt
+
+# 4. Print content of ~/Text_example.txt except first 2 and last 3 lines.
+% cat -n Text_example.txt | head -n -3 | tail -n -2   # con head -n -3 quitamos las 3 ultimas, y con tail -n -2 las dos primeras
+
+# 5. How many lines does ~/Data/opentraveldata/optd_aircraft.csv file have?
+% cat ~/Data/opentraveldata/optd_aircraft.csv | wc -l
+
+# 6. How many words do first 5 lines of the ~/Data/shell/Finn.txt have?
+% head -5 ~/Data/shell/Finn.txt | wc -w
+
+
+
+# FILE UTILITIES (3)
+
+# 1. Find all files located ONLY inside subdirectories of your home directory which have been modified in last 60min
+% cd
+% find -mindepth 2 -type f -mmin -60
+
+# 2. Find all empty files inside subdirectories of your home directory which do NOT have read-write-execute permissions given to all users
+% find -empty -type f ! -perm 777
+
+# 3. Expand previous command to grant these permissions using “ok” option.
+% find -empty -type f ! -perm 777 -ok chmod 777 {} \;
+
+# 4. Get top 3 largest files per subdirectory inside ~/Data/ 
+#Solucion mia 1:
+% find -type f -exec ls -lSs {} \; -exec head -4 {} \; -exec tail -3 {} \; --> MAL, busca todos los files dentro de Data, y después busca líneas dentro de su contenido!!
+
+# Solucion profesor:
+% find ~/Data/ -maxdepth 1 -mindepth 1 -type d -exec echo {} \; -exec zsh -c "ls -sS {} | head -3 " \; 
+# find ~/Data/ -maxdepth 1 -mindepth 1 -type d: busca los directorios que hay justo en Data, sin entrar en sus subdirectorios
+# find ~/Data/ -maxdepth 1 -mindepth 1 -type d -exec echo {} \; : lo incluye para que, además del resultado sobre su contenido, se pinte en pantalla el nombre del 
+directorio sobre el que está haciendo el ls
+# zsh -c: "take first argument as a command to execute" (copiado de ayuda)
+# find ~/Data/ -maxdepth 1 -mindepth 1 -type d -exec echo {} \; -exec zsh -c "ls -sS {} | head -3 " \; : ejecuta el comando en comillas en cada uno de los directorios
+encontrados por find, es decir, va a devolver los tres (head -3) más grandes (ls -sS)
+# Nota: debería ser -4, pq ls -sS devuelve la línea del total, por tanto head -3 devuelve esa línea de total y los 2 primeros de la lista
+
+#Solucion mia 2:
+% find ~/Data/ -maxdepth 1 -mindepth 1 -type d -exec ls -sh {} \; | head -4 --> NO VALE, pq me hace ls -sh dentro de cada directorio, pero no pinta el nombre del directorio
+sobre el que está dando el contenido. Además, head así devuelve las 4 primeras líneas de todo el contenido anterior, no de cada ls de cada directorio
+
+
